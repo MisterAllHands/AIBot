@@ -9,6 +9,8 @@ import UIKit
 import ChameleonFramework
 
 class ChatTableViewCell: UITableViewCell {
+    
+    //message label
 
     let messageLabel: UILabel = {
         let messageLabel = UILabel()
