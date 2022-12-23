@@ -12,5 +12,5 @@ struct K {
     static let cellIdentifier = "CustomMessage"
     static let cellNibName = "MessageTableViewCell"
     static let chatSegue = "Goingtochat"
-    static let key = "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"
+    static let key = "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"
 }

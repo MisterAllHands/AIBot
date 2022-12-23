@@ -43,7 +43,7 @@ class AnimationForLabel{
        DispatchQueue.main.asyncAfter(deadline: .now()+6.5){
            label1.text = ""
            label2.font = .systemFont(ofSize: 50, weight: .bold)
-           label2.blendMode = .colorDodge
+           label2.blendMode = .xor
            label2.amplitudeBase = 2000
            label2.textColor = .black
            label2.text = "AI ASSISTANT"

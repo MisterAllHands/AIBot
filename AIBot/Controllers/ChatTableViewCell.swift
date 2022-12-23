@@ -34,6 +34,7 @@ class ChatTableViewCell: UITableViewCell {
         let messageImage = UIImageView()
         messageImage.image = UIImage(named: "AIimage")
         messageImage.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        messageImage.translatesAutoresizingMaskIntoConstraints = false
         return messageImage
     }()
     
@@ -61,7 +62,6 @@ class ChatTableViewCell: UITableViewCell {
         addSubview(messageImage)
         addSubview(bubbleBackgroundView)
         addSubview(messageLabel)
-       
         addConstraints()
     }
     
@@ -80,15 +80,14 @@ class ChatTableViewCell: UITableViewCell {
             bubbleBackgroundView.leadingAnchor.constraint(equalTo: messageLabel.leadingAnchor, constant: -12),
             bubbleBackgroundView.trailingAnchor.constraint(equalTo: messageLabel.trailingAnchor, constant: 12),
             bubbleBackgroundView.bottomAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 12),
-            
-            messageImage.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
+
            
         ])
         
-        leadingConstraint = messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30)
+        leadingConstraint = messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 42)
         leadingConstraint.isActive = false
         
-        trailingConstraint = messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -32)
+        trailingConstraint = messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -42)
         trailingConstraint.isActive = true
     }
 }

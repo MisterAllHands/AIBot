@@ -8,6 +8,7 @@
 import Foundation
 
 struct ChatMessage{
+    
     var isIncoming: Bool
     var text: String
     

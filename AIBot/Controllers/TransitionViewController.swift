@@ -32,7 +32,7 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
         if let message = textField.text, !message.isEmpty {
             model.append(ChatMessage(isIncoming: false, text: message))
             textField.text = nil
-            textField.resignFirstResponder()
+            self.myTableView.reloadData()
             APICaller.share.getResponse(input: message) {[weak self] result in
                 switch result{
                 case .success(let output):
@@ -72,6 +72,7 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
             return
         }
         myTextField.text = nil
+        self.myTableView.reloadData()
         APICaller.share.getResponse(input: message) {[weak self] result in
             switch result{
             case .success(let output):

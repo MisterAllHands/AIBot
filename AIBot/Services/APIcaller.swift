@@ -9,10 +9,10 @@ import Foundation
 import OpenAISwift
 
 class APICaller {
+    
     static let share = APICaller()
-    
     private var client: OpenAISwift?
-    
+
     public func setup(){
         self.client = OpenAISwift(authToken: K.key)
         
