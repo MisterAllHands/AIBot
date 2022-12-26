@@ -3,27 +3,19 @@ PODS:
   - ChameleonFramework/Swift (2.1.0):
     - ChameleonFramework/Default
   - GlitchLabel (2.0.0)
-  - InputBarAccessoryView (5.5.0):
-    - InputBarAccessoryView/Core (= 5.5.0)
-  - InputBarAccessoryView/Core (5.5.0)
   - LTMorphingLabel (0.9.3)
-  - MessageKit (3.8.0):
-    - InputBarAccessoryView (~> 5.5.0)
   - TransitionButton (0.5.3)
 
 DEPENDENCIES:
   - ChameleonFramework/Swift (from `https://github.com/wowansm/Chameleon.git`, branch `swift5`)
   - GlitchLabel (~> 2.0.0)
   - LTMorphingLabel
-  - MessageKit
   - TransitionButton
 
 SPEC REPOS:
   trunk:
     - GlitchLabel
-    - InputBarAccessoryView
     - LTMorphingLabel
-    - MessageKit
     - TransitionButton
 
 EXTERNAL SOURCES:
@@ -39,11 +31,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   GlitchLabel: 65773d1df358ef66c8daa40428eb79bd04e7a976
-  InputBarAccessoryView: 1d7b0a672b36e370f01f264b3907ef39d03328e3
   LTMorphingLabel: f2b256e4fe665aac27f0d0e8ccdcd79590f0cd70
-  MessageKit: a1ba0c69ebead94029867853eb44dd05b9b3f453
   TransitionButton: 36283346e17c64775a1b3bc3a7a72940a367de1f
 
-PODFILE CHECKSUM: 0f0f8e4a62423e709daec5e9f37835964ad5725d
+PODFILE CHECKSUM: 55a3d88019b9ce027455a7f72012af9540189c36
 
 COCOAPODS: 1.11.3

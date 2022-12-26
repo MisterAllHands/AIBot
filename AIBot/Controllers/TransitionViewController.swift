@@ -13,17 +13,23 @@ import OpenAISwift
 class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableViewDataSource  , UITextFieldDelegate{
     
     private var model = [ChatMessage(isIncoming: true, text: "What's up Human? ")]
+    private var favorites = [Int]()
+    var textToCopy = [String]()
+    var shouldStartSelection: Bool?
     
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var myTextField: UITextField!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(hexString: "022032")
         myTextField.delegate = self
         myTextField.layer.cornerRadius = 20
         navigationItem.hidesBackButton = true
         myTableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "cell")
-        myTableView.separatorStyle = .none
+        myTableView.allowsMultipleSelectionDuringEditing = true
+        myTableView.backgroundColor = UIColor.clear
     }
     
     //MARK: - TextField
@@ -36,7 +42,6 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
             APICaller.share.getResponse(input: message) {[weak self] result in
                 switch result{
                 case .success(let output):
-                    print(output)
                     self?.model.append(ChatMessage(isIncoming: true, text: output))
                     DispatchQueue.main.async {
                         self?.myTableView.reloadData()
@@ -48,41 +53,130 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
         }
         return true
     }
+    
+    
+    @IBAction func sendButtonPressed(_ sender: UIButton) {
+        
+       
+        if let message = myTextField.text, !message.isEmpty {
+            model.append(ChatMessage(isIncoming: false, text: message))
+            myTextField.text = nil
+            self.myTableView.reloadData()
+            APICaller.share.getResponse(input: message) {[weak self] result in
+                switch result{
+                case .success(let output):
+                    self?.model.append(ChatMessage(isIncoming: true, text: output))
+                    DispatchQueue.main.async {
+                        self?.myTableView.reloadData()
+                    }
+                case .failure:
+                    print("Failed to load messages")
+                }
+            }
+        }
+    }
+}
+//MARK: - Context Menu
 
+extension ChatView{
     
     
-    //MARK: - TableView
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        let identifier = NSString(string: "\(indexPath.row)")
+        let configuration = UIContextMenuConfiguration(identifier: identifier,
+                                                       previewProvider: nil) { _ in
+            
+            let copy = UIAction(title: "Copy",
+                                image: UIImage(systemName:  "doc.on.doc")
+            ){ _ in
+                UIPasteboard.general.string = self.textToCopy[indexPath.row]
+            }
+            
+            let share = UIAction(title: "Share",
+                                image: UIImage(systemName: "square.and.arrow.up")
+            ){ _ in
+                print("item shared")
+            }
+            
+            let favorite = UIAction(title: self.favorites.contains(indexPath.row) == true ? "Add To Favorites" : "Remove from Favorites",
+                            image: self.favorites.contains(indexPath.row) ? UIImage(systemName: "star") : UIImage(systemName: "star.fill"),
+                                identifier: nil,
+                                state: .off
+            ){ _ in
+
+                if self.favorites.contains(indexPath.row) == true{
+                    self.favorites.removeAll(where: {$0 == indexPath.row})
+                }else{
+                    self.favorites.append(indexPath.row)
+                }
+            }
+            
+            let select = UIMenu(title: "",options: .displayInline, children: [
+                UIAction(title: "Select",image: UIImage(systemName: "checkmark.circle"), handler: { _ in
+                    self.shouldStartSelection = true
+                })
+            ])
+            return UIMenu(title: "",
+                          children: [copy, share, favorite, select])
+        }
+        return configuration
+    }
+  
+    
+    private func makeTargetedPreview(for configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+
+        guard let identifier = configuration.identifier as? String else { return nil }
+        let index = Int(identifier)
+        guard let cell = myTableView.cellForRow(at: .init(row: index!, section: 0)) as? ChatTableViewCell else {return nil}
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+
+        return UITargetedPreview(view: cell.messageImage, parameters: parameters)
+    }
+
+
+     func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        return makeTargetedPreview(for: configuration)
+    }
+    
+    func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        return makeTargetedPreview(for: configuration)
+    }
+}
+//MARK: - TableView Methods
+
+extension ChatView {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return model.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ChatTableViewCell
         
         let chatMessage = model[indexPath.row]
         cell.chatMessage = chatMessage
+        textToCopy.append(chatMessage.text)
+        cell.backgroundColor = UIColor(hexString: "022032")
         return cell
     }
     
+    func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
+
+        return true
+    }
     
-    @IBAction func sendButtonPressed(_ sender: UIButton) {
-        
-        guard let message = myTextField.text, !message.isEmpty else {
-            return
+    func tableView(_ tableView: UITableView, didBeginMultipleSelectionInteractionAt indexPath: IndexPath) {
+        if shouldStartSelection == true{
+            self.setEditing(true, animated: true)
+        }else{
+            self.setEditing(false, animated: true)
         }
-        myTextField.text = nil
-        self.myTableView.reloadData()
-        APICaller.share.getResponse(input: message) {[weak self] result in
-            switch result{
-            case .success(let output):
-                self?.model.append(ChatMessage(isIncoming: true, text: output))
-                DispatchQueue.main.async {
-                    self?.myTableView.reloadData()
-                }
-            case .failure:
-                print("Failed to load messages")
-            }
-        }
+    }
+    
+    func tableViewDidEndMultipleSelectionInteraction(_ tableView: UITableView) {
+        print("ting")
     }
 }

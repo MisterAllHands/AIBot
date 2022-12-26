@@ -18,7 +18,7 @@ class APICaller {
         
     }
     public func getResponse(input: String, completion: @escaping(Result<String, Error>)-> Void){
-        client?.sendCompletion(with: input, model: .gpt3(.davinci), maxTokens: 500 ,completionHandler: { result in
+        client?.sendCompletion(with: input, model: .gpt3(.curie), maxTokens: 1500 ,completionHandler: { result in
             switch result{
             case .success(let model):
                 let output = model.choices.first?.text ?? ""
