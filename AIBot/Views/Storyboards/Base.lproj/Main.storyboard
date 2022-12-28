@@ -178,6 +178,9 @@
     <designables>
         <designable name="0Kt-gK-dpx"/>
         <designable name="GJa-m3-Rg3"/>
+        <designable name="LQV-dD-4sG">
+            <size key="intrinsicContentSize" width="188" height="126"/>
+        </designable>
     </designables>
     <resources>
         <image name="Off" width="188" height="126"/>

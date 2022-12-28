@@ -14,7 +14,8 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
     
     private var model = [ChatMessage(isIncoming: true, text: "What's up Human? ")]
     private var favorites = [Int]()
-    var textToCopy = [String]()
+    var textToCopy: String = ""
+    let pasteBoard = UIPasteboard.general
     var shouldStartSelection: Bool?
     
     @IBOutlet weak var myTableView: UITableView!
@@ -35,6 +36,8 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
     //MARK: - TextField
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+     
         if let message = textField.text, !message.isEmpty {
             model.append(ChatMessage(isIncoming: false, text: message))
             textField.text = nil
@@ -53,6 +56,7 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
         }
         return true
     }
+    
     
     
     @IBAction func sendButtonPressed(_ sender: UIButton) {
@@ -83,14 +87,19 @@ extension ChatView{
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         
+        
         let identifier = NSString(string: "\(indexPath.row)")
         let configuration = UIContextMenuConfiguration(identifier: identifier,
                                                        previewProvider: nil) { _ in
             
             let copy = UIAction(title: "Copy",
                                 image: UIImage(systemName:  "doc.on.doc")
-            ){ _ in
-                UIPasteboard.general.string = self.textToCopy[indexPath.row]
+            ){ [self] _ in
+                
+               
+                pasteBoard.string = textToCopy
+                
+                      
             }
             
             let share = UIAction(title: "Share",
@@ -124,17 +133,6 @@ extension ChatView{
     }
   
     
-    private func makeTargetedPreview(for configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-
-        guard let identifier = configuration.identifier as? String else { return nil }
-        let index = Int(identifier)
-        guard let cell = myTableView.cellForRow(at: .init(row: index!, section: 0)) as? ChatTableViewCell else {return nil}
-        let parameters = UIPreviewParameters()
-        parameters.backgroundColor = .clear
-
-        return UITargetedPreview(view: cell.messageImage, parameters: parameters)
-    }
-
 
      func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
         return makeTargetedPreview(for: configuration)
@@ -143,7 +141,24 @@ extension ChatView{
     func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
         return makeTargetedPreview(for: configuration)
     }
+    
+    
+    private func makeTargetedPreview(for configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+
+        guard let identifier = configuration.identifier as? String else { return nil }
+        let index = Int(identifier)
+        guard let cell = myTableView.cellForRow(at: .init(row: index!, section: 0)) as? ChatTableViewCell else {return nil}
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+
+
+        return UITargetedPreview(view: cell.messageImage, parameters: parameters)
+        
+    }
+
 }
+
+
 //MARK: - TableView Methods
 
 extension ChatView {
@@ -158,11 +173,12 @@ extension ChatView {
         
         let chatMessage = model[indexPath.row]
         cell.chatMessage = chatMessage
-        textToCopy.append(chatMessage.text)
+        textToCopy = cell.chatMessage.text
         cell.backgroundColor = UIColor(hexString: "022032")
         return cell
     }
     
+
     func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
 
         return true
@@ -179,4 +195,6 @@ extension ChatView {
     func tableViewDidEndMultipleSelectionInteraction(_ tableView: UITableView) {
         print("ting")
     }
+    
+ 
 }

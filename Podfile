@@ -8,6 +8,7 @@ target 'AIBot' do
   
   pod "GlitchLabel", "~> 2.0.0"
   pod 'TransitionButton'
+  pod 'NotificationBannerSwift', '~> 3.0.0'
   pod 'LTMorphingLabel'
   pod 'ChameleonFramework/Swift', :git => 'https://github.com/wowansm/Chameleon.git', :branch => 'swift5'
 
