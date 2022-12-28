@@ -4,27 +4,18 @@ PODS:
     - ChameleonFramework/Default
   - GlitchLabel (2.0.0)
   - LTMorphingLabel (0.9.3)
-  - MarqueeLabel (4.0.5)
-  - NotificationBannerSwift (3.0.6):
-    - MarqueeLabel (~> 4.0.5)
-    - SnapKit (~> 5.0.1)
-  - SnapKit (5.0.1)
   - TransitionButton (0.5.3)
 
 DEPENDENCIES:
   - ChameleonFramework/Swift (from `https://github.com/wowansm/Chameleon.git`, branch `swift5`)
   - GlitchLabel (~> 2.0.0)
   - LTMorphingLabel
-  - NotificationBannerSwift (~> 3.0.0)
   - TransitionButton
 
 SPEC REPOS:
   trunk:
     - GlitchLabel
     - LTMorphingLabel
-    - MarqueeLabel
-    - NotificationBannerSwift
-    - SnapKit
     - TransitionButton
 
 EXTERNAL SOURCES:
@@ -41,11 +32,8 @@ SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   GlitchLabel: 65773d1df358ef66c8daa40428eb79bd04e7a976
   LTMorphingLabel: f2b256e4fe665aac27f0d0e8ccdcd79590f0cd70
-  MarqueeLabel: 00cc0bcd087111dca575878b3531af980559707d
-  NotificationBannerSwift: 7021be2338f8f29cf424b0aca43da462bf9e2a1a
-  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   TransitionButton: 36283346e17c64775a1b3bc3a7a72940a367de1f
 
-PODFILE CHECKSUM: 715bd21fc695fdc76d2fe077c6cdd48c1d2d3f2f
+PODFILE CHECKSUM: 55a3d88019b9ce027455a7f72012af9540189c36
 
 COCOAPODS: 1.11.3
