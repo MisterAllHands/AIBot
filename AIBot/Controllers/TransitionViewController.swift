@@ -10,11 +10,12 @@ import TransitionButton
 import OpenAISwift
 
 
-class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableViewDataSource  , UITextFieldDelegate{
+class ChatView: CustomTransitionViewController , UITextFieldDelegate{
     
     private var model = [ChatMessage(isIncoming: true, text: "What's up Human? ")]
     private var favorites = [Int]()
     var textToCopy: String = ""
+    var shouldStartToCopy: Bool = false
     let pasteBoard = UIPasteboard.general
     var shouldStartSelection: Bool?
     
@@ -30,7 +31,6 @@ class ChatView: CustomTransitionViewController, UITableViewDelegate, UITableView
         navigationItem.hidesBackButton = true
         myTableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "cell")
         myTableView.allowsMultipleSelectionDuringEditing = true
-        myTableView.backgroundColor = UIColor.clear
     }
     
     //MARK: - TextField
@@ -96,10 +96,9 @@ extension ChatView{
                                 image: UIImage(systemName:  "doc.on.doc")
             ){ [self] _ in
                 
-               
+                shouldStartToCopy = true
                 pasteBoard.string = textToCopy
                 
-                      
             }
             
             let share = UIAction(title: "Share",
@@ -150,8 +149,6 @@ extension ChatView{
         guard let cell = myTableView.cellForRow(at: .init(row: index!, section: 0)) as? ChatTableViewCell else {return nil}
         let parameters = UIPreviewParameters()
         parameters.backgroundColor = .clear
-
-
         return UITargetedPreview(view: cell.messageImage, parameters: parameters)
         
     }
@@ -161,7 +158,7 @@ extension ChatView{
 
 //MARK: - TableView Methods
 
-extension ChatView {
+extension ChatView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return model.count
@@ -173,9 +170,20 @@ extension ChatView {
         
         let chatMessage = model[indexPath.row]
         cell.chatMessage = chatMessage
-        textToCopy = cell.chatMessage.text
+        myTableView.allowsSelection = true
+        let selectedBackgroundView = UIView()
+        selectedBackgroundView.backgroundColor = UIColor.clear
+        cell.selectedBackgroundView = selectedBackgroundView
         cell.backgroundColor = UIColor(hexString: "022032")
         return cell
+        
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+             
+        
+            
     }
     
 

@@ -214,7 +214,6 @@
 			packageReferences = (
 				ED0CB32D294E92D100D32F24 /* XCRemoteSwiftPackageReference "OpenAISwift" */,
 				ED75F4002951F6D40091ADCA /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
-				EDB98C432957180F0026CBB5 /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			productRefGroup = ED0CB317294E91E600D32F24 /* Products */;
 			projectDirPath = "";
@@ -531,14 +530,6 @@
 			requirement = {
 				branch = master;
 				kind = branch;
-			};
-		};
-		EDB98C432957180F0026CBB5 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mattt/OpenAI";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
