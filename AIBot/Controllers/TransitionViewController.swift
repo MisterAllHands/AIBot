@@ -197,6 +197,8 @@
      
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          print("ting")
+         let chatMessage = model[indexPath.row]
+         textToCopy = chatMessage.text
      }
  }
 
