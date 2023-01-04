@@ -9,7 +9,6 @@ class MenuViewController: UIViewController{
     @IBOutlet weak var ai2label: GlitchLabel!
     @IBOutlet weak var ai3label: LTMorphingLabel!
     @IBOutlet weak var signUpButton: TransitionButton!
-    var isOn: Bool = false
     
     
     override func viewDidLoad() {
@@ -25,10 +24,6 @@ class MenuViewController: UIViewController{
     
    @objc func didTapButton() {
        
-       isOn = !isOn
-       
-       if isOn{
-           signUpButton.setImage(UIImage(named: "On"), for: .normal)
            DispatchQueue.main.asyncAfter(deadline: .now()+0.5){ [self] in
                signUpButton.startAnimation()
                DispatchQueue.main.asyncAfter(deadline: .now()+3){
@@ -37,8 +32,5 @@ class MenuViewController: UIViewController{
                    }
                }
            }
-       }else{
-           signUpButton.setImage(UIImage(named: "Off"), for: .normal)
-       }
     }
 }
