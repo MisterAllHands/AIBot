@@ -141,16 +141,7 @@
      func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
          return makeTargetedPreview(for: configuration)
      }
-     
-     func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
-     
-         let indexPath = myTableView.indexPathForRow(at: animator.location(in: tableView))
-         
-         let message = textToCopy
-             // Retrieve the message for the selected row and copy it to the clipboard here
-         UIPasteboard.general.string = message
-
-     }
+    
      
      private func makeTargetedPreview(for configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 
@@ -174,7 +165,6 @@
      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          
          let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ChatTableViewCell
-         
          let chatMessage = model[indexPath.row]
          cell.chatMessage = chatMessage
          textToCopy = chatMessage.text
@@ -202,6 +192,10 @@
      }
      
      func tableViewDidEndMultipleSelectionInteraction(_ tableView: UITableView) {
+         print("ting")
+     }
+     
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          print("ting")
      }
  }
