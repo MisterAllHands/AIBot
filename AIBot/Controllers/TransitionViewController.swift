@@ -19,7 +19,9 @@
      var shouldStartSelection: Bool?
      
      @IBOutlet weak var myTableView: UITableView!
+     @IBOutlet weak var sendButton: UIButton!
      @IBOutlet weak var myTextField: UITextField!
+     
 
      
      override func viewDidLoad() {
@@ -27,9 +29,11 @@
          view.backgroundColor = UIColor(hexString: "022032")
          myTextField.delegate = self
          myTextField.layer.cornerRadius = 20
+         myTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
          navigationItem.hidesBackButton = true
          myTableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "cell")
          myTableView.allowsMultipleSelectionDuringEditing = true
+         sendButton.isHidden = true
      }
      
      //MARK: - TextField
@@ -54,6 +58,10 @@
              }
          }
          return true
+     }
+     
+     @objc func textFieldEditingChanged() {
+         sendButton.isHidden = myTextField.text == "" ? true : false
      }
      
      

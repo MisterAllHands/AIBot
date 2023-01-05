@@ -150,6 +150,7 @@
                     <connections>
                         <outlet property="myTableView" destination="Edm-Jv-vgz" id="Tw1-Fg-ZCs"/>
                         <outlet property="myTextField" destination="f1I-Py-q3e" id="8Pd-oP-Cbu"/>
+                        <outlet property="sendButton" destination="XVE-UM-0iG" id="PQP-eg-ZI7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
