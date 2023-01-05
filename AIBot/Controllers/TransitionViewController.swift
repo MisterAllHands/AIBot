@@ -8,62 +8,137 @@
  import UIKit
  import TransitionButton
  import OpenAISwift
+ import ChameleonFramework
 
 
- class ChatView: CustomTransitionViewController , UITextFieldDelegate{
+ class ChatView: CustomTransitionViewController , UITextViewDelegate{
+     
+     let contentView: UIView = {
+         let view = UIView()
+         view.translatesAutoresizingMaskIntoConstraints = false
+         view.backgroundColor = .white
+         return view
+     }()
+
+     let myTextView: UITextView = {
+         let textView = UITextView()
+         textView.translatesAutoresizingMaskIntoConstraints = false
+         textView.font = UIFont.systemFont(ofSize: 17)
+         textView.isScrollEnabled = false
+         return textView
+     }()
+     
+     private let sendButton: UIButton = {
+         let button = UIButton()
+         button.translatesAutoresizingMaskIntoConstraints = false
+         button.setImage(UIImage(systemName: "arrow.up.message.fill"), for: .normal)
+         button.tintColor = .flatGreen()
+         return button
+     }()
+     
+     
      
      private var model = [ChatMessage(isIncoming: true, text: "What's up Human? ")]
      private var favorites = [Int]()
      var textToCopy: String?
-     var shouldStartToCopy: Bool = false
      var shouldStartSelection: Bool?
      
      @IBOutlet weak var myTableView: UITableView!
-     @IBOutlet weak var myTextField: UITextField!
-
+     
      
      override func viewDidLoad() {
          super.viewDidLoad()
+         view.addSubview(contentView)
+         contentView.addSubview(myTextView)
+         contentView.addSubview(sendButton)
+
+         // Add constraints to contentView
+         NSLayoutConstraint.activate([
+             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             contentView.topAnchor.constraint(equalTo: myTableView.bottomAnchor),
+             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30),
+             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 30),
+
+         // Add constraints to textView
+             myTableView.bottomAnchor.constraint(equalTo: contentView.topAnchor),
+             
+             
+             myTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+             myTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor),
+             myTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+             myTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
+             myTextView.heightAnchor.constraint(lessThanOrEqualToConstant: 100),
+                  
+             
+             
+             
+             sendButton.leadingAnchor.constraint(equalTo: myTextView.trailingAnchor),
+             sendButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+             sendButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+             sendButton.heightAnchor.constraint(equalToConstant: 50)
+             
+         ])
+         
          view.backgroundColor = UIColor(hexString: "022032")
-         myTextField.delegate = self
-         myTextField.layer.cornerRadius = 20
          navigationItem.hidesBackButton = true
          myTableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "cell")
          myTableView.allowsMultipleSelectionDuringEditing = true
+         textViewCustomization()
+         sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
+         sendButton.isHidden = false
      }
      
      //MARK: - TextField
+    
      
-     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-         
-      
-         if let message = textField.text, !message.isEmpty {
-             model.append(ChatMessage(isIncoming: false, text: message))
-             textField.text = nil
-             self.myTableView.reloadData()
-             APICaller.share.getResponse(input: message) {[weak self] result in
-                 switch result{
-                 case .success(let output):
-                     self?.model.append(ChatMessage(isIncoming: true, text: output))
-                     DispatchQueue.main.async {
-                         self?.myTableView.reloadData()
-                     }
-                 case .failure:
-                     print("Failed to load messages")
+     func textViewDidBeginEditing(_ textView: UITextView) {
+         if textView.textColor == .lightGray && myTextView.isFirstResponder {
+                 myTextView.text = nil
+                 myTextView.textColor = .white
+             }
+         if let text = textView.text, text.count > 0{
+             DispatchQueue.main.async {
+                 print("ting")
+                 UIView.animate(withDuration: 0.2) {[self] in
+                     sendButton.isHidden = false
+                     NSLayoutConstraint.activate([
+                        myTextView.trailingAnchor.constraint(equalTo: sendButton.trailingAnchor, constant: -5)
+                     ])
+                 }
+             }
+         }else{
+             DispatchQueue.main.async {
+                 print("ting33")
+                 UIView.animate(withDuration: 0.2) {[self] in
+                     sendButton.isHidden = true
+                     NSLayoutConstraint.activate([
+                        myTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+                     ])
                  }
              }
          }
-         return true
+     }
+     
+     func textViewCustomization() {
+         myTextView.layer.cornerRadius = 20
+         contentView.backgroundColor = UIColor(hexString: "022020")
+         myTextView.textColor = .lightGray
+         myTextView.text = "Message"
+         myTextView.backgroundColor = UIColor(hexString: "022032")
+             sendButton.isHidden = true
+             NSLayoutConstraint.activate([
+                myTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+             ])
      }
      
      
-     
-     @IBAction func sendButtonPressed(_ sender: UIButton) {
+   @objc func sendButtonPressed() {
          
         
-         if let message = myTextField.text, !message.isEmpty {
+         if let message = myTextView.text, !message.isEmpty {
              model.append(ChatMessage(isIncoming: false, text: message))
-             myTextField.text = nil
+             myTextView.text = nil
              self.myTableView.reloadData()
              APICaller.share.getResponse(input: message) {[weak self] result in
                  switch result{
@@ -167,7 +242,6 @@
          let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ChatTableViewCell
          let chatMessage = model[indexPath.row]
          cell.chatMessage = chatMessage
-         textToCopy = chatMessage.text
          myTableView.allowsSelection = true
          let selectedBackgroundView = UIView()
          selectedBackgroundView.backgroundColor = UIColor.clear
@@ -177,7 +251,14 @@
          
      }
 
-
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+      
+         let chatMessage = model[indexPath.row]
+         textToCopy = chatMessage.text
+         print("ting")
+         
+     }
+     
      func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
 
          return true
@@ -195,8 +276,18 @@
          print("ting")
      }
      
-     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-         print("ting")
-     }
+    
  }
 
+/*
+ 
+
+
+     override func viewDidLoad() {
+         super.viewDidLoad()
+
+        
+     }
+ 
+
+ */
